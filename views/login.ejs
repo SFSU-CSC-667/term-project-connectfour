@@ -1,0 +1,47 @@
+<html>
+   <head>
+    <title>ConnectFour - Login</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="public/css/login.css">
+
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="public/js/login.js"></script>
+  </head>
+  <body> 
+	<div class="container-fluid main">	 
+	  <div class="row">
+	  	<div class="col-sm-3">
+		</div>		
+	  	<div class="col-sm-6 login-error">
+		  	<% if (error !== "") { %>
+		  		<%= error %>
+		  	<% } %>		
+	  	</div>
+	  	<div class="col-sm-3">
+	  	</div>
+	  </div>
+	  <div class="row">
+		<div class="col-sm-3">
+		</div>
+		<div class="col-sm-6">
+			<form id="loginform" action="/login" method="post">
+			  <div class="form-group">
+				<label for="username">User Name:</label>
+				<input type="text" class="form-control" id="username" name="username">
+			  </div>
+			  <div class="form-group">
+				<label for="password">Password:</label>
+				<input type="password" class="form-control" id="password" name="password">
+			  </div>			  
+			  <a href="/register" class="btn btn-info" role="button">Register</a>
+  			  <button type="submit" class="btn btn-default">Login</button>
+			</form>    
+		</div>
+		<div class="col-sm-3"></div>
+	  </div>
+	</div>
+
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<html>
+   <head>
+    <title>ConnectFour</title>
+    <link rel='stylesheet' href='public/css/style.css' type='text/css'/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="public/js/join-game.js"></script>
+  </head>
+  <body> 
+
+    <div class="container-fluid main" style="margin-top: 50px;">   
+      <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-10">
+            <h2>Waiting Games</h2>            
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Game ID</th>
+                  <th>Game Name</th>                  
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% games.forEach(function(game) { %>
+                  <tr>
+                    <td><%= game.game_id %></td>
+                    <td><%= game.game_name %></td>
+                    <td>
+                       <input type="button" class="btn btn-success" value="Join" onclick="onJoin(<%= game.game_id %>, <%= playerid %>)"/>
+                    </td>
+                  </tr>                    
+                <% }); %>    
+                
+              </tbody>
+            </table>
+        </div>        
+        <div class="col-sm-1">                    
+          <form id="joinForm" action="/game" method="post"> 
+            <input type="hidden" id="player_no" name="player_no" value="2" />
+            <input type="hidden" id="game_id" name="game_id" /> 
+          </form>
+        </div>
+      </div>     
+      
+    </div>
+  </body>
+</html>

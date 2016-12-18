@@ -1,7 +1,7 @@
 {
-  "name": "connectFour + Chat",
+  "name": "connect-four",
   "version": "0.0.1",
-  "description": "Game",
+  "private": true,
   "dependencies": {
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",

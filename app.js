@@ -13,7 +13,9 @@ var express=require('express');
 var bodyParser = require('body-parser');
 var pg = require('pg');
 
-app.set('port', process.env.PORT || 3000);
+const port = normalizePort(process.env.PORT || '3000');
+
+app.set('port', port);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -27,7 +29,7 @@ app.use(session);
 io.use(sharedsession(session));
 
 pg.defaults.ssl = true;
-var conString = (process.env.DATABASE_URL || 'postgres://postgres:asdfgh@localhost:5432/connect4');
+var conString = (process.env.DATABASE_URL);
 var sess;
 
 // Initialize appication with route / (that means root of the application)
@@ -264,6 +266,26 @@ io.on('connection', function(socket){
 	})
 
 });
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  const port = parseInt(val, 10)
+
+  if (isNaN(port)) {
+    // named pipe
+    return val
+  }
+
+  if (port >= 0) {
+    // port number
+    return port
+  }
+
+  return false
+}
  
 //Listen application request on port 3000
 http.listen(app.get('port'), function(){

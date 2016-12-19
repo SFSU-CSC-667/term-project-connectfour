@@ -13,7 +13,9 @@ var express=require('express');
 var bodyParser = require('body-parser');
 var pg = require('pg');
 
+app.set('port', process.env.PORT || 3000);
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname)));
 app.use(bodyParser.urlencoded({
@@ -34,7 +36,22 @@ app.get('/', function(req, res){
 	sess = req.session;
 	if (sess.username)
 	{
-		res.render('index', {username: sess.username});
+		pg.connect(conString, function(err, client, done) {
+		    if (err) {
+		      return console.error('error fetching client from pool', err);
+		    }
+		    console.log("connected to database");
+
+		    client.query('SELECT * FROM games WHERE game_full = $1', [ false ], function(err, result) {
+		      done();
+		      if (err) {
+		        return console.error('error running query', err);
+		      }		      
+
+			  res.render('index', {pageTitle: "Lobby", games:result.rows,  playerid: sess.playerId, username: sess.username});		    
+		    });
+		});
+		//res.render('index', {username: sess.username});
 	} else {
 		res.redirect('/login');
 	}
@@ -42,17 +59,23 @@ app.get('/', function(req, res){
 
 //get
 app.get('/login', function(req, res){
-	res.render('login', {error: ''});
+	res.render('login', {pageTitle: "Log-In", error: ''});
+});
+
+app.get('/logout', function (req, res) {
+    sess = req.session
+    sess.destroy();
+    res.redirect('login');
 });
  
 app.get('/register', function(req, res){	
-	res.render('register');
+	res.render('register', {pageTitle: "Register"});
 });
 
 app.get('/create-new-game', function(req, res){
 	sess = req.session;
 	if (sess.username) {
-		res.render('create-new-game', {username: sess.username, playerid: sess.playerId});
+		res.render('create-new-game', {pageTitle: "Create Game", username: sess.username, playerid: sess.playerId});
 	} else {
 		res.redirect('/');
 	}
@@ -74,7 +97,7 @@ app.get('/join-game', function(req, res){
 		        return console.error('error running query', err);
 		      }		      
 
-			  res.render('join-game', {games:result.rows,  playerid: sess.playerId, username: sess.username});		    
+			  res.render('join-game', {pageTitle: "Gameroom", games:result.rows,  playerid: sess.playerId, username: sess.username});		    
 		    });
 
 		});
@@ -100,8 +123,7 @@ app.post('/login' , function(req, res) {
 
 	      if (result.rows.length == 0) {
 
-	      	res.render('login', {
-		        error: "Username or Password is not correct."
+	      	res.render('login', {pageTitle: "Login", error: "Username or Password is not correct."
     		});
 	      } else {
 			sess = req.session;
@@ -144,7 +166,7 @@ app.post('/game', function(req, res){
 			res.redirect('/');
 		}
 	
-		res.render('game', {gameID: req.body.game_id, username: sess.username, playerid: sess.playerId, playerno: req.body.player_no});
+		res.render('game', {pageTitle: "Gameroom", gameID: req.body.game_id, username: sess.username, playerid: sess.playerId, playerno: req.body.player_no});
 
 	} else {
 		res.redirect('/login');
@@ -192,7 +214,7 @@ io.on('connection', function(socket){
 	      socket.handshake.session.game_id 	  = result.rows[0].game_id;
 	      socket.handshake.session.game_name  = data.game_name;
 	      socket.handshake.session.player1_id = data.playerid;
-	
+		
 		  io.emit('createdGame', {game_id: result.rows[0].game_id});      
 	    });
 	});	
@@ -225,20 +247,26 @@ io.on('connection', function(socket){
 
 	    });		
 	});	
-  }); 
+  });  
 
 
   /*----------------------- game session ---------------------------*/
 
 	socket.on('playGame', function(d){
 
- 		io.emit('onReceivedGame', {gameID:d.gameID, playerno:d.playerno, x_pos:d.x_pos, y_pos:d.y_pos });
+ 		io.emit('onReceivedGame', {gameID:d.gameID, playerno:d.playerno, row:d.row, col:d.col });
 
 	});
 
+	socket.on('disconnect', function() {
+		console.log( socket.username + ' has disconnected from the chat.' + socket.id);
+		
+	})
+
 });
  
-// Listen application request on port 3000
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+//Listen application request on port 3000
+http.listen(app.get('port'), function(){
+  console.log('listening on ' +
+  app.get('port'));
 });

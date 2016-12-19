@@ -1,6 +1,7 @@
 var socket = io(); 
 var gameid;
 var playerid;
+var opponent;
 
 socket.on('createdGame', function(d){
   gameid = d.game_id;  
@@ -27,13 +28,20 @@ $(document).ready(function(){
         var data = {
             game_name: $('#game_name').val(),
             playerid: $('#playerid').val(),
-            username: $('#username').val()
+            username: $('#username').val(),
+            opponent: null
         };
 
         playerid = $('#playerid').val();
+        $("#game_name").prop("readonly", true);
+        $("#create_game").prop("disabled", true);
+
+        $("#system-msgs").append('<br><br>');
+        $("#system-msgs").append('<li>Game Creation Success!</li>');
+        $("#system-msgs").append('<li>Awaiting opponent..........');
         
         socket.emit('createGame', data);
-    });	
+    });
 
 });
  

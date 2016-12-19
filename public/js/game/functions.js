@@ -1,72 +1,48 @@
-/**
- * A function for adding a disc to our Connect Four board.
- *
- * @param string color The color of the current player.
- * @param int x_pos The x-position of the location chosen.
- * @param int y_pos The y-position of the location chosen.
- */
-function addDiscToBoard(color, x_pos, y_pos) {
-    board[y_pos][x_pos] = color;
+
+// change color on board
+function playGamePiece(color, row, col) {
+    board[col][row] = color;
 }
 
-/**
- * Print the contents of our `board` variable to the html page.
- */
-function printBoard() {
-    // Loop through the board, and add classes to each cell for the
-    // appropriate colors.
-    for (var y = 0; y <= 5; y++) {
-        for (var x = 0; x <= 6; x++) {
-            if (board[y][x] !== 0) {
-                var cell = $("tr:eq(" + y + ")").find('td').eq(x);
-                cell.children('button').addClass(board[y][x]);
+// draw gameboard
+function drawGameBoard() {
+    // Draws by adding appropriate color classes where needed
+    for (var c = 0; c <= 5; c++) {
+        for (var r = 0; r <= 6; r++) {
+            if (board[c][r] !== 0) {
+                var cell = $("tr:eq(" + c + ")").find('td').eq(r);
+                cell.children('button').addClass(board[c][r]);
             }
         }
     }
 }
 
-/**
- * If there are empty positions below the one chose, return the new y-position
- * we should drop the piece to.
- *
- * @param int x_pos The x-position of the location chosen.
- * @param int y_pos The y-position of the location chosen.
- * @return bool returns true or false for the question "Is this at the bottom?".
- */
-function dropToBottom(x_pos, y_pos) {
+function dropToBottom(row, col) {
     // Start at the bottom of the column, and step up, checking to make sure
     // each position has been filled. If one hasn't, return the empty position.
-    for (var y = 5; y > y_pos; y--) {
-        if (board[y][x_pos] === 0) {
-            return y;
+    for (var c = 5; c > col; c--) {
+        if (board[c][row] === 0) {
+            return c;
         }
     }
 
-    return y_pos;
+    return col;
 }
 
-/**
- * Test to ensure the chosen location isn't taken.
- *
- * @param int x_pos The x-position of the location chosen.
- * @param int y_pos The y-position of the location chosen.
- * @return bool returns true or false for the question "Is this spot taken?".
- */
-function positionIsTaken(x_pos, y_pos) {
-    var value = board[y_pos][x_pos];
+// Checks to see if a non-empty position is clicked.
+// - This is necessary to ensure a player cannot override opponent's play(s).
+function gamePieceClicked(row, col) {
+    var value = board[col][row];
 
     return value === 0 ? false : true;
 }
 
-/**
- * Determine if the game is a draw (all peices on the board are filled).
- *
- * @return bool Returns true or false for the question "Is this a draw?".
- */
+/*---------------------- Game Ending Conditions---------------------------------- */
+/* Inspirations: http://bryanbraun.github.io/connect-four/*/
 function gameIsDraw() {
-    for (var y = 0; y <= 5; y++) {
-        for (var x = 0; x <= 6; x++) {
-            if (board[y][x] === 0) {
+    for (var c = 0; c <= 5; c++) {
+        for (var r = 0; r <= 6; r++) {
+            if (board[c][r] === 0) {
                 return false;
             }
         }
@@ -76,11 +52,6 @@ function gameIsDraw() {
     return true;
 }
 
-/**
- * Test to see if somebody got four consecutive horizontal pieces.
- *
- * @return bool Returns true if a win was found, and otherwise false.
- */
 function horizontalWin() {
     var currentValue = null,
         previousValue = 0,
@@ -88,9 +59,9 @@ function horizontalWin() {
 
     // Scan each row in series, tallying the length of each series. If a series
     // ever reaches four, return true for a win.
-    for (var y = 0; y <= 5; y++) {
-        for (var x = 0; x <= 6; x++) {
-            currentValue = board[y][x];
+    for (var c = 0; c <= 5; c++) {
+        for (var r = 0; r <= 6; r++) {
+            currentValue = board[c][r];
             if (currentValue === previousValue && currentValue !== 0) {
                 tally += 1;
             } else {
@@ -112,11 +83,6 @@ function horizontalWin() {
     return false;
 }
 
-/**
- * Test to see if somebody got four consecutive vertical pieces.
- *
- * @return bool Returns true if a win was found, and otherwise false.
- */
 function verticalWin() {
     var currentValue = null,
         previousValue = 0,
@@ -124,9 +90,9 @@ function verticalWin() {
 
     // Scan each column in series, tallying the length of each series. If a
     // series ever reaches four, return true for a win.
-    for (var x = 0; x <= 6; x++) {
-        for (var y = 0; y <= 5; y++) {
-            currentValue = board[y][x];
+    for (var r = 0; r <= 6; r++) {
+        for (var c = 0; c <= 5; c++) {
+            currentValue = board[c][r];
             if (currentValue === previousValue && currentValue !== 0) {
                 tally += 1;
             } else {
@@ -148,28 +114,22 @@ function verticalWin() {
     return false;
 }
 
-/**
- * Test to see if somebody got four consecutive diagonel pieces.
- *
- * @todo: refactor this to make it more DRY.
- * @return bool Returns true if a win was found, and otherwise false.
- */
 function diagonalWin() {
-    var x = null,
-        y = null,
-        xtemp = null,
-        ytemp = null,
+    var r = null,
+        c = null,
+        r_temp = null,
+        c_temp = null,
         currentValue = null,
         previousValue = 0,
         tally = 0;
 
     // Test for down-right diagonals across the top.
-    for (x = 0; x <= 6; x++) {
-        xtemp = x;
-        ytemp = 0;
+    for (r = 0; r <= 6; r++) {
+        r_temp = r;
+        c_temp = 0;
 
-        while (xtemp <= 6 && ytemp <= 5) {
-            currentValue = board[ytemp][xtemp];
+        while (r_temp <= 6 && c_temp <= 5) {
+            currentValue = board[c_temp][r_temp];
             if (currentValue === previousValue && currentValue !== 0) {
                 tally += 1;
             } else {
@@ -182,8 +142,8 @@ function diagonalWin() {
             previousValue = currentValue;
 
             // Shift down-right one diagonal index.
-            xtemp++;
-            ytemp++;
+            r_temp++;
+            c_temp++;
         }
         // Reset the tally and previous value when changing diagonals.
         tally = 0;
@@ -191,12 +151,12 @@ function diagonalWin() {
     }
 
     // Test for down-left diagonals across the top.
-    for (x = 0; x <= 6; x++) {
-        xtemp = x;
-        ytemp = 0;
+    for (r = 0; r <= 6; r++) {
+        r_temp = r;
+        c_temp = 0;
 
-        while (0 <= xtemp && ytemp <= 5) {
-            currentValue = board[ytemp][xtemp];
+        while (0 <= r_temp && c_temp <= 5) {
+            currentValue = board[c_temp][r_temp];
             if (currentValue === previousValue && currentValue !== 0) {
                 tally += 1;
             } else {
@@ -209,8 +169,8 @@ function diagonalWin() {
             previousValue = currentValue;
 
             // Shift down-left one diagonal index.
-            xtemp--;
-            ytemp++;
+            r_temp--;
+            c_temp++;
         }
         // Reset the tally and previous value when changing diagonals.
         tally = 0;
@@ -218,12 +178,12 @@ function diagonalWin() {
     }
 
     // Test for down-right diagonals down the left side.
-    for (y = 0; y <= 5; y++) {
-        xtemp = 0;
-        ytemp = y;
+    for (c = 0; c <= 5; c++) {
+        r_temp = 0;
+        c_temp = c;
 
-        while (xtemp <= 6 && ytemp <= 5) {
-            currentValue = board[ytemp][xtemp];
+        while (r_temp <= 6 && c_temp <= 5) {
+            currentValue = board[c_temp][r_temp];
             if (currentValue === previousValue && currentValue !== 0) {
                 tally += 1;
             } else {
@@ -236,8 +196,8 @@ function diagonalWin() {
             previousValue = currentValue;
 
             // Shift down-right one diagonal index.
-            xtemp++;
-            ytemp++;
+            r_temp++;
+            c_temp++;
         }
         // Reset the tally and previous value when changing diagonals.
         tally = 0;
@@ -245,12 +205,12 @@ function diagonalWin() {
     }
 
     // Test for down-left diagonals down the right side.
-    for (y = 0; y <= 5; y++) {
-        xtemp = 6;
-        ytemp = y;
+    for (c = 0; c <= 5; c++) {
+        r_temp = 6;
+        c_temp = c;
 
-        while (0 <= xtemp && ytemp <= 5) {
-            currentValue = board[ytemp][xtemp];
+        while (0 <= r_temp && c_temp <= 5) {
+            currentValue = board[c_temp][r_temp];
             if (currentValue === previousValue && currentValue !== 0) {
                 tally += 1;
             } else {
@@ -263,8 +223,8 @@ function diagonalWin() {
             previousValue = currentValue;
 
             // Shift down-left one diagonal index.
-            xtemp--;
-            ytemp++;
+            r_temp--;
+            c_temp++;
         }
         // Reset the tally and previous value when changing diagonals.
         tally = 0;

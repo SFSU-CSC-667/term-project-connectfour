@@ -1,7 +1,18 @@
 <html>
   <head>
-    <% include partials/template/head.ejs %>
-    <!--<link rel="stylesheet" href="public/css/main.css" type='text/css'> -->
+    <title>ConnectFour</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel='stylesheet' href='public/css/style.css' type='text/css'/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="public/css/main.css">
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <script src="public/js/game/vars.js"></script>
     <script src="public/js/game/functions.js"></script>
     <script src="public/js/game.js"></script>
@@ -12,23 +23,88 @@
     <input type="hidden" id="playerid" value="<%= playerid %>" /> 
     <input type="hidden" id="playerno" value="<%= playerno %>" />
 
-    <% include partials/template/nav.ejs %>
-
-    <div class="row" id="gameroom-main">
-        <div class="info" style="padding: 10px; margin-bottom: 25px;">
-          <h1 class="title">Play Connect Four!</h1>
-          <h3 class="myColor"><span class="colorMsg"></span></h3>
-          <h3 class="message"><span class="prefix"></span><span id="player" class="player">&nbsp;</span></h3>
+    <div class="container-fluid main" style="margin-top: 50px;">   
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-5" style="border: 1px solid #ccc;padding: 5px; border-radius: 6px;">            
+          <ul id="messages"></ul>
+          <span id="notifyUser"></span>
+          <form id="form" action="" onsubmit="return submitfunction();" > 
+            <input type="hidden" id="user" value="<%= username %>" /> 
+            <div class="col-sm-10">
+            <input id="m" autocomplete="off" onkeyup="notifyTyping();" placeholder="Type yor message here.." type="text" class="form-control"/>
+            </div>
+            <div class="col-sm-2">
+            <input type="submit" id="send" class="btn btn-success" value="Send" class="form-control"/> 
+            </div>
+          </form>   
         </div>
-        <div id="game-board" class="col-sm-6 col-lg-8">
-          <% include partials/template/gameboard.ejs %>
+        <div class="col-sm-6">    
+          <div class="info">
+            <h1 class="title">Play Connect Four!</h1>
+            <h2 class="message"><span class="prefix"></span><span id="player" class="player">&nbsp;</span></h2>
+            <a href="#" class="play-again" style="display: none;">Play Again</a>
+          </div>
+          <table class="board">
+            <tbody>
+              <tr>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+              </tr>
+              <tr>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+              </tr>
+              <tr>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+              </tr>
+              <tr>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+              </tr>
+              <tr>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+              </tr>
+              <tr>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+                <td><button type="button"></button></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <div id="gr-chat" class="col-sm-6 col-lg-4" style="padding-right: 100px;">
-          <h2>Chat</h2>
-          <% include partials/template/chat.ejs %>
-        </div>
+      </div>
     </div>
-
   </body>
 </html>

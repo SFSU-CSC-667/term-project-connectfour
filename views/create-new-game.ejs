@@ -1,10 +1,16 @@
 <html>
    <head>
-    <% include partials/template/head.ejs %>
+    <title>ConnectFour</title>
+    <link rel='stylesheet' href='public/css/style.css' type='text/css'/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <script src="public/js/create-game.js"></script>
   </head>
   <body> 
-    <% include partials/template/jumbotron.ejs %>
 
     <div class="container-fluid main" style="margin-top: 50px;">   
       <div class="row">
@@ -14,20 +20,15 @@
             <input type="hidden" id="game_id" name="game_id" /> 
           </form>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-10">
           <div class="form-group">
             <label for="game_name">Game :</label>
             <input type="text" class="form-control" id="game_name" name="game_name">
           </div>
           <div class="form-group">
-            <input type="button" id="create_game" class="btn btn-success" value="Create" class="form-control"/> 
+            <input type="button" id="create_game" class="btn btn-success" value="Next" class="form-control"/> 
           </div>
-        </div> 
-        <div class="col-sm-5 well">
-            <ul id="system-msgs" class="list-unstyled">
-              <h4>Enter a name for the new game.</h4>
-            </ul>
-        </div>       
+        </div>        
         <div class="col-sm-1">
           <input type="hidden" id="username" value="<%= username %>" /> 
           <input type="hidden" id="playerid" value="<%= playerid %>" /> 

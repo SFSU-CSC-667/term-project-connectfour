@@ -1,10 +1,6 @@
 var socket = io(); 
 var gameid;
 
-function updateTable() {
-    $('#wait-games').load(window.location.href + " #wait-games" );
-};
-
 function onJoin(gameId, playerId) {
 
     gameid = gameId;
@@ -15,7 +11,7 @@ function onJoin(gameId, playerId) {
 
     socket.emit('joinGame', data);
   
-};
+}
 
 socket.on('joinedGame', function(d){
    
@@ -31,9 +27,7 @@ socket.on('joinedGame', function(d){
 });
 
 $(document).ready(function(){
-    setInterval(function () {
-        updateTable();
-    }, 3000);
+
 
 });
 

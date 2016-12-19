@@ -1,7 +1,6 @@
 var socket = io(); 
 var gameID;
 var username;
-//var opponent;
 var playerid;  
 var playerno;
 
@@ -9,61 +8,60 @@ $(document).ready(function() {
 
     gameID    = $("#gameID").val();
     username  = $("#username").val();
-    //opponent  = $("#opponent").val();
     playerid  = $("#playerid").val();
     playerno  = $("#playerno").val();
 
     //initial state
     if (playerno == '2') {
-      $('.board button').prop("disabled",true);
-      //config.redPlayerName = username;
-      $('.colorMsg').addClass("red").text("You're the Red game piece");
-    } else {
-      //config['yellowPlayerName'] = username;
-      $('.colorMsg').addClass("yellow").text("You're the Yellow game piece")
+      $('.board button').prop("disabled",true);  
     }
-    
+     
     $('.prefix').text(config.playerPrefix);
     $('#player').addClass(currentPlayer).text(config[currentPlayer + "PlayerName"]);
 
     // Trigger the game sequence by clicking on a position button on the board.
     $('.board button').click(function(e) {
-        // Determine clicked position
-        var col = $('.board tr').index($(this).closest('tr'));
-        var row = $(this).closest('tr').find('td').index($(this).closest('td'));
+        // Detect the x and y position of the button clicked.
+        var y_pos = $('.board tr').index($(this).closest('tr'));
+        var x_pos = $(this).closest('tr').find('td').index($(this).closest('td'));
 
-        // Drop piece to the bottom
-        col = dropToBottom(row, col);
+        // Ensure the piece falls to the bottom of the column.
+        y_pos = dropToBottom(x_pos, y_pos);
 
-        if (gamePieceClicked(row, col)) {
+        if (positionIsTaken(x_pos, y_pos)) {
             alert(config.takenMsg);
             return;
         }
 
-        playGamePiece(currentPlayer, row, col);
-        drawGameBoard();
+        addDiscToBoard(currentPlayer, x_pos, y_pos);
+        printBoard();
 
         $('.board button').prop("disabled",true);
-        socket.emit('playGame', {gameID:gameID, playerno:playerno, row:row, col:col });
+        socket.emit('playGame', {gameID:gameID, playerno:playerno, x_pos:x_pos, y_pos:y_pos });
 
-        // Check game ending conditions
+        // Check to see if we have a winner.
         if (verticalWin() || horizontalWin() || diagonalWin()) {
-            // Disable game board
+            // Destroy our click listener to prevent further play.
             $('.board button').unbind('click');
-            $('.colorMsg').text("You Win!");
             $('.prefix').text(config.winPrefix);
+            //$('.play-again').show("slow");
             return;
 
         } else if (gameIsDraw()) {
-            // Disable game board
+            // Destroy our click listener to prevent further play.
             $('.board button').unbind('click');
-            $('.colorMsg').text("Draw!");
             $('.message').text(config.drawMsg);
+            //$('.play-again').show("slow");
             return;
         }
 
-        changePlayer(row, col);
+        changePlayer(x_pos, y_pos);
     });
+
+    /*$('.play-again').click(function(e) {
+        location.reload();
+    });*/
+
 });
 
 socket.on('onReceivedGame', function(d){
@@ -75,33 +73,33 @@ socket.on('onReceivedGame', function(d){
       return;
     }
 
-    row = d.row;
-    col = d.col;
+    x_pos = d.x_pos;
+    y_pos = d.y_pos;
 
-    playGamePiece(currentPlayer, row, col);
-    drawGameBoard();
+    addDiscToBoard(currentPlayer, x_pos, y_pos);
+    printBoard();
 
     // Check to see if we have a winner.
     if (verticalWin() || horizontalWin() || diagonalWin()) {
         // Destroy our click listener to prevent further play.
         $('.board button').unbind('click');
-        $('.colorMsg').text("You Lose...");
         $('.prefix').text(config.winPrefix);
+        //$('.play-again').show("slow");
         return;
 
     } else if (gameIsDraw()) {
         // Destroy our click listener to prevent further play.
         $('.board button').unbind('click');
-        $('.colorMsg').text("Draw!");
         $('.message').text(config.drawMsg);
+        //$('.play-again').show("slow");
         return;
     }
 
     // Change the value of our player variable.
-    if (currentPlayer === 'yellow') {
+    if (currentPlayer === 'black') {
         currentPlayer = 'red';
     } else {
-        currentPlayer = 'yellow';
+        currentPlayer = 'black';
     }
 
     // Update the UI.
@@ -110,13 +108,15 @@ socket.on('onReceivedGame', function(d){
     $('.board button').prop("disabled", false);
 
 });
-
-function changePlayer(r, c) {
+/**
+ * A function for changing players at the end of a turn.
+ */
+function changePlayer(x, y) {
     // Change the value of our player variable.
-    if (currentPlayer === 'yellow') {
+    if (currentPlayer === 'black') {
         currentPlayer = 'red';
     } else {
-        currentPlayer = 'yellow';
+        currentPlayer = 'black';
     }
 
     // Update the UI.

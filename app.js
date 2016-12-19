@@ -26,8 +26,8 @@ app.use(bodyParser.json());
 app.use(session);
 io.use(sharedsession(session));
 
-
-var conString = 'postgres://postgres:asdfgh@localhost:5432/connect4';
+pg.defaults.ssl = true;
+var conString = process.env.DATABASE_URL;
 var sess;
 
 // Initialize appication with route / (that means root of the application)

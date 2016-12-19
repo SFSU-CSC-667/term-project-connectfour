@@ -19,6 +19,10 @@ form #button { color:#FFF; background: #2D9F0B; border: none; padding: 10px;  wi
 	margin: auto;
 }
 
+.login-error{
+  color: red;
+}
+
 #welcome-jumbo {
   background: rgb(181,189,200);
   background: -moz-linear-gradient(-45deg,  rgba(181,189,200,1) 0%, rgba(130,140,149,1) 36%, rgba(40,52,59,1) 100%);
@@ -103,7 +107,7 @@ button.red {
 }
 
 button.yellow {
-  background: rgb(254,252,234);
+  background: rgb(244, 220, 11);
   background: -moz-radial-gradient(center, ellipse cover,  rgba(254,252,234,1) 0%, rgba(241,218,54,1) 100%);
   background: -webkit-radial-gradient(center, ellipse cover,  rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%);
   background: radial-gradient(ellipse at center,  rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%);
@@ -128,20 +132,4 @@ button.yellow {
 
 .info .yellow {
   color: yellow;
-}
-
-@media (max-width: 460px) {
-  .message {
-    font-size: 1.3em;
-  }
-
-  .wrapper {
-    margin: 20px auto 0;
-    width: 240px;
-  }
-
-  .board button {
-    width: 30px;
-    height: 30px;
-  }
 }

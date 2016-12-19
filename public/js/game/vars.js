@@ -1,7 +1,7 @@
 var config = {
-        blackPlayerName: "Player 1",
+        yellowPlayerName: "Player 1",
         redPlayerName: "Player 2",
-        startingPlayer: "black", // Choose 'black' or 'red'.
+        startingPlayer: "yellow", // Choose 'yellow' or 'red'.
         takenMsg: "This position is already taken. Please make another choice.",
         drawMsg: "This game is a draw.",
         playerPrefix: "Current Player is: ",
@@ -9,6 +9,8 @@ var config = {
         countToWin: 4,
     };
 
+// Logical gameboard.
+// 0: empty; yellow: yellow piece occupies; red: red piece occupies
 var board = [[0,0,0,0,0,0,0],
              [0,0,0,0,0,0,0],
              [0,0,0,0,0,0,0],
@@ -16,4 +18,5 @@ var board = [[0,0,0,0,0,0,0],
              [0,0,0,0,0,0,0],
              [0,0,0,0,0,0,0]];
 
+//initialize first turn
 var currentPlayer = config.startingPlayer;

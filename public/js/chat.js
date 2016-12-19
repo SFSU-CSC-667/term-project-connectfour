@@ -1,5 +1,4 @@
 var socket = io(); 
-
 function submitfunction(){
   var from = $('#user').val();
   var message = $('#m').val();
@@ -14,20 +13,12 @@ function notifyTyping() {
   var user = $('#user').val();
   socket.emit('notifyUser', user);
 }
-
-
-//http://stackoverflow.com/questions/18614301/keep-overflow-div-scrolled-to-bottom-unless-user-scrolls-up
-function updateScroll(){
-    var element = document.getElementById("messages");
-    element.scrollTop = element.scrollHeight;
-}
  
 socket.on('chatMessage', function(from, msg){
   var me = $('#user').val();
   var color = (from == me) ? 'green' : '#009afd';
   var from = (from == me) ? 'Me' : from;
   $('#messages').append('<li><b style="color:' + color + '">' + from + '</b>: ' + msg + '</li>');
-  updateScroll();
 });
  
 socket.on('notifyUser', function(user){

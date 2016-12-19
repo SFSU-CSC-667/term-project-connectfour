@@ -7,5 +7,5 @@
 cd to directory
 psql -f connect4.sql
 npm install
-node index.js
+node app.js
 ```

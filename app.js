@@ -65,9 +65,19 @@ app.get('/login', function(req, res){
 });
 
 app.get('/logout', function (req, res) {
-    sess = req.session
+    sess = req.session;
     sess.destroy();
     res.redirect('login');
+});
+
+app.get('/about', function(req, res){
+    sess = req.session;
+    if (sess.username) {
+        res.render('about', {pageTitle: "About", username: sess.username});
+    } else {
+        res.render('about', {pageTitle: "About", username: "Guest"});
+    }
+    
 });
  
 app.get('/register', function(req, res){	
